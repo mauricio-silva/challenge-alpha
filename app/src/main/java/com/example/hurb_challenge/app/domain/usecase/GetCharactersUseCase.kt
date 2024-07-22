@@ -21,5 +21,4 @@ class GetCharactersUseCase @Inject constructor(
         ).flow.map { pagingData ->
             pagingData.map { character -> character.toCardItem() }
         }
-
 }

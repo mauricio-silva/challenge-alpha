@@ -36,7 +36,7 @@ fun ErrorMessage(message: String, modifier: Modifier = Modifier, onClick: () -> 
         )
         Spacer(modifier = Modifier.height(18.dp))
         Button(
-            onClick = { onClick() },
+            onClick = onClick::invoke,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
         ) {

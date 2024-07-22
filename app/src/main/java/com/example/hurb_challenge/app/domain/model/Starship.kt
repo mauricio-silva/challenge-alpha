@@ -9,3 +9,4 @@ data class Starship(
 ) : ImageUrlProvider {
     override fun getImageUrl() = BuildConfig.BASE_IMAGE_URL+"/starships/"+id+".jpg"
 }
+
