@@ -2,19 +2,20 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kotlin.serialization)
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hilt.kapt)
+    alias(libs.plugins.kotlin.parcelize)
+    kotlin("kapt")
 }
 
 android {
     namespace = "com.example.hurb_challenge"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.example.hurb_challenge"
-        minSdk = 23
-        targetSdk = 34
-        versionCode = 1
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = libs.versions.versionCode.get().toInt()
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -23,13 +24,22 @@ android {
         }
     }
 
+    android.buildFeatures.buildConfig = true
+
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://swapi.dev/api/\"")
+            buildConfigField("String", "BASE_IMAGE_URL", "\"https://starwars-visualguide.com/assets/img/\"",)
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
+            buildConfigField("String", "BASE_URL", "\"https://swapi.dev/api/\"")
+            buildConfigField("String", "BASE_IMAGE_URL", "\"https://starwars-visualguide.com/assets/img/\"",)
         }
     }
     compileOptions {
@@ -54,18 +64,25 @@ android {
 
 dependencies {
 
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.android.compiler)
     implementation(libs.retrofit)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
     implementation(libs.converter.gson)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
+
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.paging)
+    implementation(libs.paging.compose)
+    implementation(libs.splashscreen)
+    kapt(libs.hilt.android.compiler)
+
     implementation(libs.coil.compose)
+    implementation(libs.material.icons.extended)
+
     implementation(libs.navigation.compose)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -73,9 +90,11 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
     kaptTest(libs.hilt.compiler)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
